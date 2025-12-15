@@ -1,0 +1,24 @@
+- hosts: local
+  connection: local
+  become: yes
+  tasks:
+    - name: Instalar apache web server
+      apt:
+        name: apache2
+        state: present
+    - name: Crear index.html y anadir contenido
+      blockinfile:
+        path: /var/www/html/index.html
+        create: yes
+        block: |
+          <!DOCTYPE html>
+          <html>
+          <body>
+          <h1>This was deployed with Ansible</h1>
+          <p>In science fiction, an "ansible" is a hypothetical, faster-than-light communication device.</p>
+          </body>
+          </html>
+    - name: Iniciar apache en foreground (podman container)
+      command: apache2ctl -D FOREGROUND
+      async: 3600
+      poll: 0
