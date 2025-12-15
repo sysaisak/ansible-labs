@@ -1,0 +1,10 @@
+- hosts: local
+  connection: local
+  become: yes
+  tasks:
+    - name: Ensure that two base pkgs are installed
+      apt:
+        name:
+          - htop
+          - curl
+        state: present
