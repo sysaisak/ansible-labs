@@ -1,0 +1,21 @@
+- hosts: local
+  connection: local
+  tasks:
+    - name: Crear archivo gestionado por Ansible
+      copy:
+        dest: /tmp/ansible_test.txt
+        content: |
+          Este archivo fue creado y es gestionado por Ansible.
+
+          Idempotencia:
+          En Ansible, una tarea es idempotente cuando puede ejecutarse
+          múltiples veces sin producir cambios adicionales si el
+          estado deseado ya se ha alcanzado.
+
+          Esto significa que:
+          - La primera ejecución crea o modifica el archivo.
+          - Las siguientes ejecuciones no hacen ningún cambio
+            mientras el contenido sea el mismo.
+
+          Por eso Ansible puede ejecutarse de forma segura
+          una y otra vez sin romper el sistema.
