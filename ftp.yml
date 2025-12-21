@@ -1,0 +1,48 @@
+- name: Setup FTP server
+  hosts: homelab
+  become: true   # run all as sudo
+
+  tasks:
+    - name: Install vsftpd
+      ansible.builtin.apt:
+        name: vsftpd
+        state: present
+        update_cache: true
+
+    # This task defines how the FTP service behaves
+    - name: Configure vsftpd
+      ansible.builtin.copy:
+        dest: /etc/vsftpd.conf      # vsftpd main configuration file
+        owner: root
+        group: root
+        mode: '0644'                # Read permissions
+        content: |
+          listen=YES
+          anonymous_enable=NO
+          local_enable=YES
+          write_enable=YES          # Allow write operations
+          chroot_local_user=YES     # Jail users inside their home directories
+          allow_writable_chroot=YES
+      notify: Restart vsftpd        # Restart service only if config changes (invoke handler)
+
+    # Ensure the vsftpd service is running and enabled at boot
+    - name: Enable and start vsftpd
+      ansible.builtin.service:
+        name: vsftpd
+        state: started
+        enabled: true
+
+  handlers:
+  # Handler: Restart vsftpd
+  # -----------------------------------
+  # Purpose: Restart the vsftpd service only if the configuration file changed.
+  # Triggered by: The "Configure vsftpd" task which notifies this handler when the file is modified.
+  # Benefits:
+  #   - Prevents unnecessary restarts if no changes were made
+  #   - Ensures the service uses the latest configuration
+  #   - Improves playbook efficiency and safety
+    - name: Restart vsftpd
+      ansible.builtin.service:
+        name: vsftpd
+        state: restarted
+
