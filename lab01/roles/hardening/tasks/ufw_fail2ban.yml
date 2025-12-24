@@ -1,0 +1,31 @@
+- name: Install ufw and fail2ban
+  ansible.builtin.apt:
+    name:
+      - ufw
+      - fail2ban
+    state: present
+    update_cache: yes
+
+- name: Enable ufw
+  community.general.ufw:
+    state: enabled
+
+- name: Allow SSH connection (rate limit)
+  community.general.ufw:
+    rule: limit
+    name: OpenSSH
+
+- name: Enable fail2ban service
+  ansible.builtin.service:
+    name: fail2ban
+    enabled: true
+    state: started
+
+- name: Deploy fail2ban jail configuration
+  ansible.builtin.template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart fail2ban

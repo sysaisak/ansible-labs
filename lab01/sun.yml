@@ -1,0 +1,6 @@
+- name: Configure Debian 13 homelab
+  hosts: homelab
+  become: true
+
+  roles:
+    - hardening
