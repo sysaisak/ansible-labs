@@ -12,7 +12,7 @@
 
 - name: Allow SSH connection (rate limit)
   community.general.ufw:
-    rule: limit
+    rule: allow
     name: OpenSSH
 
 - name: Enable fail2ban service
